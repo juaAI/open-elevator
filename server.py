@@ -19,7 +19,7 @@ app = FastAPI(
     description='This API gives access to elevation above sea level in 30 meter resolution.\
         More information about the dataset: <a href="https://registry.opendata.aws/terrain-tiles/">S3 Elevation Repo</a>',
     version=1.0
-)
+    )
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 elevator = OpenElevator(initialized=True, cache=True)
@@ -46,14 +46,14 @@ def get_elevation_single(
 
     More information: https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.griddata.html
     '''
-    if interpolation in elevator.interpolation_methods:
+    if interpolation in elevator.INTERPOLATION_METHODS:
         check = util.check_lat_lon(lat, lon)
         if check == True:
             return {"elevation":elevator.get_elevation(lat, lon, interpolation=interpolation)}
         else:   
             return check    
     else:
-        return {"error":f"interpolation must be in {elevator.interpolation_methods}"}
+        return {"error":f"interpolation must be in {elevator.INTERPOLATION_METHODS}"}
 
 @app.post("/v1/data")
 def get_elevation_list(locations:schemas.Locations):
@@ -69,7 +69,7 @@ def get_elevation_list(locations:schemas.Locations):
     interpolation = locations.interpolation
     locations = locations.locations
 
-    if interpolation in elevator.interpolation_methods:
+    if interpolation in elevator.INTERPOLATION_METHODS:
         if len(locations) > 100:
             return {"error":"max 100 locations allowed per request"}
         else:
@@ -91,7 +91,7 @@ def get_elevation_list(locations:schemas.Locations):
                         return check
             return {"elevations":all_elevations}
     else:
-        return {"error":f"interpolation must be in {elevator.interpolation_methods}"}
+        return {"error":f"interpolation must be in {elevator.INTERPOLATION_METHODS}"}
 
 @app.get("/v1/viz")
 def get_elevation_viz(
@@ -115,11 +115,11 @@ def get_elevation_viz(
     '''
     check = util.check_lat_lon(lat, lon)
     if check == True:
-        if colormap in elevator.colormaps:
+        if colormap in elevator.COLORMAPS:
             image = elevator.plot_elevation(lat, lon, colormap=colormap)
             return StreamingResponse(image, media_type="image/png")
         else:
-            return {"error":f"colormap must be in {elevator.colormaps}"}
+            return {"error":f"colormap must be in {elevator.COLORMAPS}"}
     else:
         return check
 

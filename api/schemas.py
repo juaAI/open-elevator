@@ -9,3 +9,6 @@ from typing import Optional
 class Locations(BaseModel):
     locations: list
     interpolation: str = "linear"
+
+class ElevationResponse(BaseModel):
+    elevation: float

@@ -61,21 +61,14 @@ class OpenElevator():
         # CONST
         self.AWS_ELEVATION_BUCKET="elevation-tiles-prod"
         self.AWS_HGT_DIR="skadi"
-        self.SAMPLES=3601 # raster col/row size of dataset
-
-        # DIRS
-        self.current_dir = os.path.dirname(os.path.abspath(__file__))
-        self.data_dir    = os.path.join(self.current_dir, "data")
-        self.temp_dir    = os.path.join(self.current_dir, "tmp")
-        self.debug       = False
-
-        self.interpolation_methods = [
+        self.SAMPLES=3601 # raster col/row size of dataset       
+        self.INTERPOLATION_METHODS = [
             "none",
             "nearest",
             "linear",
             "cubic"
         ] # as available in skipy.interpolate.griddata
-        self.colormaps = [
+        self.COLORMAPS = [
             "terrain",
             "gist_earth",
             "ocean",
@@ -86,6 +79,12 @@ class OpenElevator():
             "plasma",
             "inferno"
         ]
+
+        # DIRS
+        self.current_dir = os.path.dirname(os.path.abspath(__file__))
+        self.data_dir    = os.path.join(self.current_dir, "data")
+        self.temp_dir    = os.path.join(self.current_dir, "tmp")
+        self.debug       = False
 
         # SYSTEM
         self.cpu_cores        = cpu_count()
@@ -238,8 +237,8 @@ class OpenElevator():
         Get elevation for given lat,lon
         """
 
-        if interpolation not in self.interpolation_methods:
-            print(f"Interpolation method {interpolation} not available. Available methods: {self.interpolation_methods}")
+        if interpolation not in self.INTERPOLATION_METHODS:
+            print(f"Interpolation method {interpolation} not available. Available methods: {self.INTERPOLATION_METHODS}")
         else:
             hgt_file = self._get_file_name(lat, lon)
             if hgt_file:               
@@ -279,7 +278,6 @@ class OpenElevator():
                         )[0])
 
                 if self.cache_active:
-                    print(cache_key)
                     self.cache.set(cache_key, elevation)
                 
                 return elevation
@@ -294,7 +292,7 @@ class OpenElevator():
         available colormaps:
 
         '''
-        if colormap in self.colormaps:
+        if colormap in self.COLORMAPS:
             hgt_file = self._get_file_name(lat, lon)
             if hgt_file:
                 memory_buffer = BytesIO()
@@ -313,7 +311,7 @@ class OpenElevator():
                 plt.clf()
                 return memory_buffer
         else:
-            print(f"colormap must be in {self.colormaps}")
+            print(f"colormap must be in {self.COLORMAPS}")
 
     def dev_test_read_speed(self, set_cache=True):
         start = time.time()
