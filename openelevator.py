@@ -29,15 +29,8 @@ import aioredis
 class OpenElevator():
     def __init__(self, initialized=False,cache=True):
         '''
-        Notes:
-            Downloading could be speeded up if using a shared
-            client, but boto3 currently does not offer pickling
-            of its ressources (https://github.com/boto/boto3/issues/2741)
-
-        ToDos:
-            - Init:
-                - Check free space and raise error if <2TB
-                - Dockerfile
+        OpenElevator class for accessing elevation
+        data programmatically
 
         Initialization:
             from open-elevator import OpenElevator
@@ -47,7 +40,7 @@ class OpenElevator():
 
         Example usage:
             from PIL import Image
-            from open-elevator import OpenElevator
+            from openelevator import OpenElevator
 
             elevator = OpenElevator()
             
@@ -440,4 +433,4 @@ class OpenElevator():
 
 if __name__ == "__main__":
     elevator = OpenElevator()
-    elevator.prepare_data(download=False)
+    elevator.prepare_data()

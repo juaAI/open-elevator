@@ -28,7 +28,7 @@ def check_lat_lon(lat:float,lon:float):
 # load config and provide global vars that 
 # are imported by server and routes
 dir_path = os.path.dirname(os.path.realpath(__file__))
-with open(os.path.join(dir_path,"api","config.yml")) as yaml_file:
+with open(os.path.join(dir_path,"config.yml")) as yaml_file:
     config_content = dict(yaml.load(
                         yaml_file, 
                         Loader=yaml.FullLoader

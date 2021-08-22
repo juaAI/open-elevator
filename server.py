@@ -16,7 +16,7 @@ from fastapi_cache.backends.redis import RedisBackend
 from fastapi_limiter import FastAPILimiter
 
 from api.routes import elevation
-from util import server_host, server_port, ssl_cert, ssl_key
+from api.util import server_host, server_port, ssl_cert, ssl_key
 
 # init app
 app = FastAPI(
