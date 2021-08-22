@@ -4,6 +4,7 @@ The API will soon be publicly hosted for free.
 
 ![Credit:Bild Arek Socha auf Pixabay](img/earth.png)
 
+API
 ```shell
 $ curl http://localhost:8080/v1/elevation/json?lat=50.078217&lon=8.239761&interpolation=cubic
 
@@ -52,6 +53,20 @@ Request average: 22.21 ms @ 84k requests in 30seconds
         iterations.....................: 84046  2639.131214/s
         vus............................: 2915   min=2915      max=5000
         vus_max........................: 5000   min=5000      max=5000
+
+### Vizalization
+```python
+from PIL import Image
+from openelevator import OpenElevator
+
+elevator = OpenElevator()
+
+# visualize a specific location
+img = elevator.plot_elevation(lat=50.078217, lon=8.239761)
+with Image.open(img) as im:
+    im.show()
+```
+![Vizalization](img/viz.png)
 
 ### Requirements
 - At least 1.7 TB of free space
@@ -110,7 +125,7 @@ of its ressources (https://github.com/boto/boto3/issues/2741)
 ### Underlying dataset
 [AWS Elevation tiles](https://registry.opendata.aws/terrain-tiles/)
 
-# Important
+# Important!!!
 
-1. fastapi-limiter currently has a [bug that is not merged yet](https://github.com/hardbyte/fastapi-limiter/commit/1ef5b5bc59c8967c71d0ec802da6e6773798dee1)
-2. 
+1. fastapi-limiter currently has a [bug that is not merged yet](https://github.com/hardbyte/fastapi-limiter/commit/1ef5b5bc59c8967c71d0ec802da6e6773798dee1) so the current project will
+throw an exception!!!

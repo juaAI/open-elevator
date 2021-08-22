@@ -8,4 +8,4 @@ server:
   port: 8080
   rate-limit: 100
   rate-reset: 60
-  viz-active: False
+  viz-active: True

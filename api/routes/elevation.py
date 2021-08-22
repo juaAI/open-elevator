@@ -94,17 +94,8 @@ async def get_elevation_list(
     '''
 
     interpolation = locations.interpolation
-    locations = locations.locations
-
-    if interpolation in elevator.INTERPOLATION_METHODS:
-        if len(locations) > 100:
-            return {"error":"max 100 locations allowed per request"}
-        else:
-            all_elevations = []
-            for i in locations:
-                if len(i) != 2:
-                    return {"error":f"'{i}': every location array must contain exactly 2 values"}
-                else:                    
+    locations = locations.loVizalization
+![Vizalization](img/viz.png)             
                     check = util.check_lat_lon(i[1],i[0])
                     if check == True:
                         all_elevations.append({

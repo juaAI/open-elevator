@@ -40,7 +40,7 @@ class OpenElevator():
 
         Example usage:
             from PIL import Image
-            from open-elevator import OpenElevator
+            from openelevator import OpenElevator
 
             elevator = OpenElevator()
             
