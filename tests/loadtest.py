@@ -33,24 +33,30 @@ def make_big_request(coords):
     else:
         sys.stderr.write("ERROR\n")
 
-def make_load_test():
-    processes = os.cpu_count()
-
-    lats = list(np.arange(51,52,0.01))
-    lons = list(np.arange(7,8,0.01))
-
+def generate_coords():
+    lats = list(np.arange(49,50,0.0001))
+    lons = list(np.arange(7,8,0.0001))
     coords = []
-
-    start = time.time()
-
     for i in range(len(lats)):
         coords.append([lons[i],lats[i]])
+    return coords
 
+def make_load_test_single():
+    processes = os.cpu_count()   
+    coords = generate_coords()
+    p = Pool(processes=processes)
+
+    start = time.time()
+    p.map(make_single_requests, coords)
+    print("Took", (time.time() - start)*1000, "milliseconds for", len(coords), "requests")
+    p.close()
+
+def make_load_test_multi():
+
+    coords = generate_coords()
+    start = time.time()
     make_big_request(coords)
-
-    #p = Pool(processes=processes)
-    #p.map(make_single_requests, coords)
     print("Took", (time.time() - start)*1000, "milliseconds")
-    #p.close()
 
-print(make_load_test())
+
+make_load_test_single()

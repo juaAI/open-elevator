@@ -14,7 +14,6 @@ import gzip
 import time
 import numpy as np
 from io import BytesIO
-from redis import Redis
 from shutil import copyfileobj
 from boto3 import resource
 from tqdm import tqdm
@@ -22,6 +21,9 @@ from multiprocessing import Pool, cpu_count
 from botocore.handlers import disable_signing
 from scipy.interpolate import griddata
 import matplotlib.pyplot as plt
+
+import asyncio
+import aioredis
 
 
 class OpenElevator():
@@ -96,15 +98,38 @@ class OpenElevator():
         # INIT
         if initialized:
             if self.cache_active:
-                self.cache = Redis(host="localhost", port=6379, db=0)
+                self.cache = aioredis.from_url("redis://localhost", encoding="iso-8859-1", decode_responses=True)
         else:
             print("Initialize with self.prepare_data() or init class with initialized=True")
             
 
     def prepare_data(self, download=True):
         '''
-        Download the neccessary DEM data to 
-        tmp dir
+        Download and preprocesses the neccessary DEM data from remote 
+        s3:// repository to local tmp dir (self.temp_dir) with all available 
+        processor threads. You need about 1.6 TB free space for the whole 
+        extracted dataset.
+
+        Workflow:
+            1. Download data multithreaded
+            2. Unzip data
+            3. Place all files in data dir and delete zip files
+
+        Args:
+            download:bool >> Specify if data needs to be downloaded or is
+                             already present in given self.temp_dir
+
+                             You might already have downloaded the dataset
+                             via s3 cli, so just place the data in a folder
+                             called "tmp" in the working directory and start
+                             with download=False to unzip the data and place
+                             it in the data dir
+
+                             command for aws cli:  
+                                aws s3 cp --no-sign-request --recursive s3://elevation-tiles-prod/skadi /path/to/data/folder
+
+        Returns:
+            None
         '''
         
         if download:
@@ -152,8 +177,16 @@ class OpenElevator():
 
     def _download_single(self, files):
         '''
-        Downloads given s3 files 
-        Function to multiprocess
+        Downloads given s3 files from given AWS_ELEVATION_BUCKET
+
+        This function is supposed to be multiprocessed and not
+        being called directly.
+
+        Args:
+            files:list >> list of files with full path on AWS s3
+        
+        Returns:
+            None
         '''
 
         s3 = resource('s3')
@@ -172,8 +205,21 @@ class OpenElevator():
 
     def _verify_extract_single(self, single_folder):
         '''
-        Checks and removes temp files 
-        and extracts gzipped files
+        Verifies downloaded files and and extracts gzipped files
+
+        This function is to be multiprocessed and not being called
+        directly.
+
+        If the download has been stopped while in progress or any
+        other error occured, there might be corrupted files or 'half files'.
+        These wrong files are being deleted, while good files are being 
+        extracted and placed in data folder.
+        
+        Args:
+            single_folder:str >> folder in temp_dir to be checked
+        
+        Returns:
+            None
         '''
 
         for j in os.listdir(single_folder):
@@ -194,8 +240,18 @@ class OpenElevator():
     def _get_file_name(self, lat, lon):
         """
         Returns filename such as N27E086.hgt, concatenated
-        with HGTDIR where these 'hgt' files are kept
+        with HGTDIR as given by NASA's file syntax
+
         CREDIT: https://github.com/aatishnn/srtm-python
+        
+        Args:
+            lat:float >> latitude, number between -90 and 90
+            lon:float >> longitude, number between -180 and 180
+
+        Returns:
+            hgt_file:str >> name of hgt_file
+                OR
+            None
         """
         if lat >= 0:
             ns = 'N'
@@ -222,9 +278,23 @@ class OpenElevator():
     def get_data_from_hgt_file(self, hgt_file):
         '''
         Get full data array from hgt file
+
+        Hgt files are gridded binary files provided by NASA with
+        a data type of 16bit signed integer(i2) - big endian(>).
+        The data could also be read with rasterio or gdal, but takes
+        a lot longer and would slow the workflow down. 
+
+        Every file contains 3601x3601 values with an equal distance of
+        1 arc seconds (30 meter).
+
+        Args:
+            hgt_file:str >> file_name of hgt file
+
+        Returns:
+            elevations:np.array >> 2d numpy array with 3601x3601 values
+
         '''
-        with open(os.path.join(self.data_dir, hgt_file), 'rb') as hgt_data:
-            # HGT is 16bit signed integer(i2) - big endian(>)
+        with open(os.path.join(self.data_dir, hgt_file), 'rb') as hgt_data:            
             elevations = np.fromfile(
                 hgt_data,  # binary data
                 np.dtype('>i2'),  # data type
@@ -232,9 +302,24 @@ class OpenElevator():
             ).reshape((self.SAMPLES, self.SAMPLES))
             return elevations
 
-    def get_elevation(self, lat, lon, interpolation="cubic"):
+    async def get_elevation(self, lat, lon, interpolation="cubic"):
         """
-        Get elevation for given lat,lon
+        Get elevation for given lat,lon and interpolation method
+
+        For locations between data points, interpolation is being used by
+        scipy package. Interpolation methods available are cubic, linear and
+        and nearest_neighbor. However, the underlying dataset is very accurate 
+        (30 meter resolution), so the greatest distance to a verified measurement 
+        is maximum 15 meters. 
+
+        Args:
+            lat:float >> latitude, number between -90 and 90
+            lon:float >> longitude, number between -180 and 180
+            interpolation:str >> interpolation_method in self.INTERPOLATION_METHODS
+                                 ["none","linear","cubic","nearest"]
+        
+        Returns:
+            elevation:float >> elevation above sea level
         """
 
         if interpolation not in self.INTERPOLATION_METHODS:
@@ -250,15 +335,20 @@ class OpenElevator():
 
                 if self.cache_active:
                     cache_key = str(hgt_file) + "_" + str(lat_row_raw) + "_" + str(lon_row_raw) + "_" + interpolation
-                    cache_result = self.cache.get(cache_key)
+                    cache_result = await self.cache.get(cache_key)
                     if cache_result is not None:
-                        return cache_result.decode("iso-8859-1")
+                        return float(cache_result)
 
-                elevations = self.get_data_from_hgt_file(hgt_file)
+                elevations = self.get_data_from_hgt_file(hgt_file)                
 
                 if interpolation == "none":                    
-                    elevation = int(elevations[self.SAMPLES - 1 - lat_row, lon_row].astype(int))
-                else:                                     
+                    elevation = float(elevations[self.SAMPLES - 1 - lat_row, lon_row].astype(int))
+                # in case we are at the very edges of a tile file, we do
+                # not interpolate to avoid opening up to 4 tile files for
+                # a single elevation lookup
+                elif lat_row_raw == 0.0 or lon_row == 0.0:
+                    elevation = float(elevations[self.SAMPLES - 1 - lat_row, lon_row].astype(int))
+                else:
                     grid = [
                         [int(lon_row_raw), int(lat_row_raw)+1],
                         [int(lon_row_raw)+1, int(lat_row_raw)+1],
@@ -278,7 +368,7 @@ class OpenElevator():
                         )[0])
 
                 if self.cache_active:
-                    self.cache.set(cache_key, elevation)
+                    await self.cache.set(cache_key, elevation)
                 
                 return elevation
             # Treat it as data void as in SRTM documentation
@@ -287,9 +377,34 @@ class OpenElevator():
 
     def plot_elevation(self, lat, lon, colormap="terrain"):
         '''
-        Plot elevation arround given coordinates
+        Plot elevation arround given coordinates and marks
+        the coordinate location on the plot.
+
+        For now, this function plots the hgt file, where the
+        given coordinates are found on. For locations located
+        at the edges, this solution is not great. This function
+        was written mainly for development purposes.
 
         available colormaps:
+            "terrain",
+            "gist_earth",
+            "ocean",
+            "jet",
+            "rainbow",
+            "viridis",
+            "cividis",
+            "plasma",
+            "inferno"
+
+        Args:
+            lat:float >> latitude, number between -90 and 90
+            lon:float >> longitude, number between -180 and 180
+
+        Returns:
+            img:BytesIO memory buffer >> vizualize with
+                                         >>from PIL import Image
+                                         >>with Image.open(img) as f_img:
+                                         >>    f_img.show()
 
         '''
         if colormap in self.COLORMAPS:
@@ -313,16 +428,14 @@ class OpenElevator():
         else:
             print(f"colormap must be in {self.COLORMAPS}")
 
-    def dev_test_read_speed(self, set_cache=True):
+    def _dev_test_read_speed(self, set_cache=True):
+        '''
+        Development function to test read speed of hgt files
+        '''
         start = time.time()
         lat, lon = 0.44454, 12.34334
-        if set_cache:
-            elevation = self.get_elevation(lat,lon)
-            self.cache.set((str(lat) + "_" + str(lon)), str(elevation))
-        else:
-            elevation = self.cache.get((str(lat) + "_" + str(lon))).decode("iso-8859-1")
-        print(
-            f"Height for lat {lat}, lon {lon} >> {elevation} << meter above ground")
+        elevation = self.get_elevation(lat,lon)
+        print(f"Height for lat {lat}, lon {lon} >> {elevation} << meter above ground")
         print("Took",(time.time()-start)*1000,"milliseconds")
 
 if __name__ == "__main__":
