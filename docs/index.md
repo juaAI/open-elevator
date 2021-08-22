@@ -5,7 +5,7 @@
         <strong>Open Elevator API</strong> is an easy to use elevation service with up to 3m resolution.<br> Use our free <a href="/api/">public API</a>
         or <a href="/installation/">run your own</a>.
     </p>
-   <a href="/docs"> <h3> Try it out </h3> </a>
+   <a href="/elevation/playground"> <h3> Try it out </h3> </a>
 </div>
 
 ---
@@ -15,7 +15,7 @@
 ### Single location
 
 ``` shell
-$ curl http://localhost:8080/v1/elevation/json?lat=50.078217&lon=8.239761
+$ curl https://opendata.predly.com/v1/elevation/json?lat=50.078217&lon=8.239761
 ```
 
 ``` json
