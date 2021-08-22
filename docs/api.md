@@ -61,8 +61,10 @@ $ curl -X 'POST' \
 
     required
         list of:
-            lat: float
-            lon: float
+            [
+                lon: float, 
+                lat: float
+            ]
     optional
         interpolation: str in ["none", "linear", "cubic", "nearest]
 

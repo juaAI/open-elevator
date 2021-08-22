@@ -7,7 +7,9 @@
 </div>
 ---
 
-### API example
+## API example
+
+### Single location
 
 ``` shell
 $ curl http://localhost:8080/v1/elevation/json?lat=50.078217&lon=8.239761
@@ -23,7 +25,50 @@ $ curl http://localhost:8080/v1/elevation/json?lat=50.078217&lon=8.239761
 }
 ```
 
-### Package example
+### Multiple locations
+
+```shell
+$ curl -X 'POST' \
+  'https://opendata.predly.com/v1/elevation/json' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "locations": [
+    [50,8],[50,9],[51,8]
+  ],
+  "interpolation": "linear"
+}'
+```
+
+```json
+{
+  "results": [
+    {
+      "elevation": -32,
+      "location": {
+        "lat": 50,
+        "lon": 8
+      }
+    },
+    {
+      "elevation": 397,
+      "location": {
+        "lat": 50,
+        "lon": 9
+      }
+    },
+    {
+      "elevation": -3361,
+      "location": {
+        "lat": 51,
+        "lon": 8
+      }
+    }
+  ]
+}
+```
+
+## Package example
 
 ```python
 from PIL import Image

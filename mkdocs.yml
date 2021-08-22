@@ -17,7 +17,7 @@ theme:
 
 repo_name: predly/open-elevator
 repo_url: https://github.com/predly/open-elevator
-copyright: Released under MIT License | <a href="https://predly.com" >Predly Technologies GmbH</a>
+copyright: Released under MIT License | <a href="https://predly.com" >Predly Technologies</a>
 
 extra_javascript:
   - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/highlight.min.js
