@@ -24,7 +24,8 @@ app = FastAPI(
     title="Open Elevator API",
     description='This API gives access to elevation above sea level in 30 meter resolution.\
         More information about the dataset: <a href="https://registry.opendata.aws/terrain-tiles/">S3 Elevation Repo</a>',
-    version=1.0
+    version=0.1,
+    docs_url="/elevation/playground"
     )
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 
@@ -47,13 +48,14 @@ async def startup():
     await FastAPILimiter.init(redis)
 
 # index entrypoint
-app.mount("/", StaticFiles(directory="../site", html = True), name="docs")
-#@app.get("/")
-#async def index():
-#    ''' Redirects to the docs
-#    '''
-#    resp = RedirectResponse(url='/docs')
-#    return resp
+app.mount("/elevation/docs/", StaticFiles(directory="../site", html = True), name="docs")
+
+@app.get("/")
+async def index():
+    ''' Redirects to the docs
+    '''
+    resp = RedirectResponse(url='/elevation/docs/')
+    return resp
 
 # mount routes
 app.include_router(
