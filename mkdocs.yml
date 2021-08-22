@@ -1,0 +1,45 @@
+site_name: Open Elevator API
+site_url : https://opendata.predly.com/elevation/
+site_description: 30 meter accuracy DEM server
+
+theme:
+  name: 'material'
+  logo: assets/logo.png
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+
+repo_name: predly/open-elevator
+repo_url: https://github.com/predly/open-elevator
+copyright: Released under MIT License | <a href="https://predly.com" >Predly Technologies</a>
+
+extra_javascript:
+  - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/highlight.min.js
+  - javascripts/config.js
+extra_css:
+  - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/styles/default.min.css
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - attr_list
+
+extra:
+  social:
+    - icon: fontawesome/solid/paper-plane
+      link: mailto:<opensource@predly.com>
+    - icon: fontawesome/brands/github
+      link: https://github.com/predly
+
+nav:
+    - Introduction: 'index.md'
+    - Dataset: 'dataset.md'
+    - API usage: 'api.md'
+    - Local setup: 'installation.md'
+    - Attribution: 'attribution.md'
+    - Changelog: 'changelog.md'

@@ -44,7 +44,9 @@ async def get_elevation_single(
     Returns:
         response:object >> json object with elevation data
     '''
-    if interpolation in elevator.INTERPOLATION_METHODS:
+    if interpolation not in elevator.INTERPOLATION_METHODS:
+        return {"error":f"interpolation must be in {elevator.INTERPOLATION_METHODS}"}
+    else:    
         check = util.check_lat_lon(lat, lon)
         if check == True:
             resp = {
@@ -61,14 +63,11 @@ async def get_elevation_single(
             return resp
         else:   
             return check    
-    else:
-        return {"error":f"interpolation must be in {elevator.INTERPOLATION_METHODS}"}
 
 @router.post("/json", dependencies=[Depends(RateLimiter(
                         times=util.rate_limit, 
                         seconds=util.rate_reset
                         ))])
-@cache()
 async def get_elevation_list(
     locations:schemas.Locations,
     request: Request,
@@ -94,8 +93,19 @@ async def get_elevation_list(
     '''
 
     interpolation = locations.interpolation
-    locations = locations.loVizalization
-![Vizalization](img/viz.png)             
+    locations = locations.locations
+    
+    if interpolation not in elevator.INTERPOLATION_METHODS:
+        return {"error":f"interpolation must be in {elevator.INTERPOLATION_METHODS}"}
+    else:
+        if len(locations) > 100:
+            return {"error":"max 100 locations allowed per request"}
+        else:
+            all_elevations = []
+            for i in locations:
+                if len(i) != 2:
+                    return {"error":f"'{i}': every location array must contain exactly 2 values"}
+                else: 
                     check = util.check_lat_lon(i[1],i[0])
                     if check == True:
                         all_elevations.append({
@@ -105,18 +115,16 @@ async def get_elevation_list(
                                 interpolation=interpolation
                                 ),
                             "location":{
-                                "lat":lat,
-                                "lon":lon
+                                "lat":i[0],
+                                "lon":i[1]
                                 }
                             }
                         )
                     else:   
                         return check
             
-            {"results":all_elevations}
+            resp = {"results":all_elevations}
             return resp
-    else:
-        return {"error":f"interpolation must be in {elevator.INTERPOLATION_METHODS}"}
 
 if util.viz_active:
     @router.get("/viz")
