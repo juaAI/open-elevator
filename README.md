@@ -1,5 +1,5 @@
 # Open Elevator
-Open Elevator is a high performance elevation API with 30m global accuracy.
+Open Elevator is a free elevation API with 30m global accuracy.
 The API will soon be publicly hosted for free.
 
 ![Credit:Bild Arek Socha auf Pixabay](docs/assets/earth.png)
