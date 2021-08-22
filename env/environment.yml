@@ -74,8 +74,25 @@ dependencies:
   - xz=5.2.5=h7b6447c_0
   - zlib=1.2.11=h7b6447c_3
   - pip:
+    - aiofiles==0.7.0
     - aioredis==2.0.0
     - fastapi-cache2==0.1.6
+    - fastapi-limiter==0.1.4
+    - ghp-import==2.0.1
+    - importlib-metadata==4.6.4
+    - jinja2==3.0.1
+    - markdown==3.3.4
+    - markupsafe==2.0.1
+    - mergedeep==1.3.4
+    - mkdocs==1.2.2
+    - mkdocs-material==7.2.4
+    - mkdocs-material-extensions==1.0.1
+    - packaging==21.0
+    - pygments==2.10.0
+    - pymdown-extensions==8.2
     - pyyaml==5.4.1
+    - pyyaml-env-tag==0.1
+    - watchdog==2.1.4
+    - zipp==3.5.0
 prefix: /home/morpheus/anaconda3/envs/open-elevator
 

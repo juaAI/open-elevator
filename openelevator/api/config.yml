@@ -1,11 +1,11 @@
 ssl:
   ssl: True
-  cert: /home/morpheus/.config/code-server/certs/cert2.pem
-  cert-key: /home/morpheus/.config/code-server/certs/privkey2.pem
+  cert: /home/morpheus/priv/cert.pem
+  cert-key: /home/morpheus/priv/privkey.pem
 
 server:
   host: 0.0.0.0
   port: 8080
   rate-limit: 100
   rate-reset: 60
-  viz-active: True
+  viz-active: False

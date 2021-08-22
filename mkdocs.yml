@@ -1,5 +1,5 @@
 site_name: Open Elevator API
-site_url : https://opendata.predly.com/elevation
+site_url : https://opendata.predly.com/elevation/
 site_description: 30 meter accuracy DEM server
 
 theme:
@@ -27,6 +27,7 @@ extra_css:
 markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences
+  - attr_list
 
 extra:
   social:

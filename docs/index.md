@@ -2,9 +2,12 @@
     <h1 >Open Elevator API</h1>
     <img src="assets/earth.png"></img>
     <p style="text-align:center">
-        <strong>Open Elevator API</strong> is an easy to use elevation service with up to 3m resolution.<br> <a href="#selfservice">Run your own</a> or use our free <a href="#free-api">public API</a>.
+        <strong>Open Elevator API</strong> is an easy to use elevation service with up to 3m resolution.<br> Use our free <a href="/api/">public API</a>
+        or <a href="/installation/">run your own</a>.
     </p>
+   <a href="/docs"> <h3> Try it out </h3> </a>
 </div>
+
 ---
 
 ## API example

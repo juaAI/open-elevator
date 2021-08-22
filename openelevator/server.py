@@ -9,6 +9,7 @@ import uvicorn
 from starlette.responses import RedirectResponse
 
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi_cache import FastAPICache
@@ -46,12 +47,13 @@ async def startup():
     await FastAPILimiter.init(redis)
 
 # index entrypoint
-@app.get("/")
-async def index():
-    ''' Redirects to the docs
-    '''
-    resp = RedirectResponse(url='/docs')
-    return resp
+app.mount("/", StaticFiles(directory="../site", html = True), name="docs")
+#@app.get("/")
+#async def index():
+#    ''' Redirects to the docs
+#    '''
+#    resp = RedirectResponse(url='/docs')
+#    return resp
 
 # mount routes
 app.include_router(
