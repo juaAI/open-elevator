@@ -38,7 +38,7 @@ extra:
 nav:
     - Introduction: 'index.md'
     - Dataset: 'dataset.md'
-    - API docs: 'api.md'
-    - Installation: 'installation.md'
+    - API usage: 'api.md'
+    - Local setup: 'installation.md'
     - Attribution: 'attribution.md'
     - Changelog: 'changelog.md'

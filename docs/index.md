@@ -10,7 +10,7 @@
 ### API example
 
 ``` shell
-$ curl http://localhost:8080/v1/elevation/json?lat=50.078217&lon=8.239761&interpolation=cubic
+$ curl http://localhost:8080/v1/elevation/json?lat=50.078217&lon=8.239761
 ```
 
 ``` json
