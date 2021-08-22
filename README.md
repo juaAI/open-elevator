@@ -2,7 +2,7 @@
 Open Elevator is a high performance elevation API with 30m global accuracy.
 The API will soon be publicly hosted for free.
 
-![Credit:Bild Arek Socha auf Pixabay](img/earth.png)
+![Credit:Bild Arek Socha auf Pixabay](docs/assets/earth.png)
 
 API
 ```shell
@@ -66,7 +66,7 @@ img = elevator.plot_elevation(lat=50.078217, lon=8.239761)
 with Image.open(img) as im:
     im.show()
 ```
-![Vizalization](img/viz.png)
+![Vizalization](docs/assets/viz.png)
 
 ### Requirements
 - At least 1.7 TB of free space
@@ -113,6 +113,8 @@ with Image.open(img) as im:
         - max/min slope in area
         - height profile of given geojson
 - [ ] add Dockerfile
+- [ ] add Makefile
+- [ ] update installation information
 - [ ] check for free space
 
 ### Notes
