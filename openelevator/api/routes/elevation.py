@@ -16,9 +16,10 @@ from api import schemas, util
 router = APIRouter()
 elevator = OpenElevator(initialized=True, cache=True)
 
-@router.get("/json", dependencies=[Depends(RateLimiter(
+@router.get("/json", response_model=schemas.SingleElevationResponse,
+                     dependencies=[Depends(RateLimiter(
                         times=util.rate_limit, 
-                        seconds=util.rate_reset
+                        seconds=util.rate_reset,
                         ))])
 @cache()
 async def get_elevation_single(
@@ -64,7 +65,8 @@ async def get_elevation_single(
         else:   
             return check    
 
-@router.post("/json", dependencies=[Depends(RateLimiter(
+@router.post("/json", response_model=schemas.MultiElevationResponse,
+                      dependencies=[Depends(RateLimiter(
                         times=util.rate_limit, 
                         seconds=util.rate_reset
                         ))])
