@@ -75,10 +75,12 @@ app.add_middleware(
 )
 
 if __name__ == "__main__":
+
     uvicorn.run(
         app, 
         host=server_host, 
         port=server_port,
         ssl_keyfile=ssl_key,
-        ssl_certfile=ssl_cert
+        ssl_certfile=ssl_cert,
+        log_config="log_config.yaml"
         )
