@@ -3,7 +3,7 @@
 The API provides global elevation data access via HTTP. It's possible to either
 query a single location, or up to 100 locations at once. Optionally, it's possible to
 select the interpolation method used. The overall resolution depends on the location
-queried [(more Information)](/elevation/dataset).
+queried [(more Information)](/elevation/docs/dataset).
 
 The API has 1 endpoint:
 

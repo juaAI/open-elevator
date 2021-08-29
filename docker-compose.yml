@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+    openelevator:
+        build: 
+            context: openelevator
+            dockerfile: Dockerfile
+            args:
+                cert: /home/morpheus/priv/cert.pem
+                cert-key: /home/morpheus/priv/privkey.pem
+                rate-limit: 100
+                rate-reset: 60
+        ports:
+            - "443:443"
+        volumes:
+            - elevationdata:/data
+            - finaldata:/tmp
+        networks:
+            - backend
+        
+    redis:
+        image: redis:latest
+        restart: unless-stopped
+        networks:
+            - backend
+    
+networks:
+    backend:
+        driver: bridge
+
+volumes:
+    elevationdata:
+        driver: local
+    finaldata:
+        driver: local

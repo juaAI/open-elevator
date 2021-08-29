@@ -433,4 +433,10 @@ class OpenElevator():
 
 if __name__ == "__main__":
     elevator = OpenElevator()
-    elevator.prepare_data()
+    if not os.path.exists("tmp"):
+        if not os.path.exists("data"):
+            elevator.prepare_data()
+        else:
+            if len(os.listdir(("data"))) == 0:
+                elevator.prepare_data()
+                

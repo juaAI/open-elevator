@@ -6,7 +6,7 @@ The API is publicly hosted for free at [https://opendata.predly.com/v1/elevation
 
 API
 ```shell
-$ curl http://localhost:8080/v1/elevation/json?lat=50.078217&lon=8.239761&interpolation=cubic
+$ curl https://opendata.predly.com/v1/elevation/json?lat=50.078217&lon=8.239761
 
 {
   "elevation": 118.73242074762783,
@@ -17,19 +17,19 @@ $ curl http://localhost:8080/v1/elevation/json?lat=50.078217&lon=8.239761&interp
 }
 ```
 
-### Features
+### 1. Features
 - OpenElevator Class
     - Retrieving and preprocessing of dataset
     - Builtin cache for elevation query within python
     - Builtin interpolation of elevation between grid points
-    - Vizualization of elevation for given locatio
+    - Visualization of elevation for given locatio
 - OpenElevator Web API
     - Single location lookup (GET request)
     - multiple location lookup
     - Builtin API cache
     - Builtin Rate Limiting
 
-### Performance
+### 2. Performance
 (Tested on a machine with Ryzen Epyc 32 Cores and 0.5 TB RAM on empty cache)
 
 Request average: 22.21 ms @ 84k requests in 30seconds
@@ -54,7 +54,7 @@ Request average: 22.21 ms @ 84k requests in 30seconds
         vus............................: 2915   min=2915      max=5000
         vus_max........................: 5000   min=5000      max=5000
 
-### Vizalization
+### 3. Visualization
 ```python
 from PIL import Image
 from openelevator import OpenElevator
@@ -66,48 +66,11 @@ img = elevator.plot_elevation(lat=50.078217, lon=8.239761)
 with Image.open(img) as im:
     im.show()
 ```
-![Vizalization](docs/assets/viz.png)
+![Visualization](docs/assets/viz.png)
 
-### Requirements
-- At least 1.7 TB of free space
-- Time to init (since initialization can take several hours depending on your machine and internet connection)
-- Running Redis server
+### 4. Set up your own [with this Tutorial](./docs/installation.md)
 
-### Installation
-1. Be on linux
-2. Have Aaconda package manager installed
-3. Have a running Redis server installed 
-4. Install dependencies & download and preprocess dataset
-    ```shell
-    $ conda env create --file /env/environment.yml
-    $ conda activate open-elevator
-    $ python openelevator.py
-    ```
-5. Update api/config.yml configuration to specific needs
-    ```yml
-    ssl:
-        ssl: True
-        cert: /path/to/cert.pem
-        cert-key: /path/to/privkey.pem
-
-    server:
-        host: 0.0.0.0
-        port: 8080
-        rate-limit: 100
-        rate-reset: 60
-        viz-active: False
-    ```
-6. Run API
-    ```shell
-    $ python server.py
-    
-    INFO:     Started server process [696905]
-    INFO:     Waiting for application startup.
-    INFO:     Application startup complete.
-    INFO:     Uvicorn running on https://0.0.0.0:8080 (Press CTRL+C to quit)
-    ```
-
-### ToDos
+### 5, ToDos
 - [ ] Add support for interpolation add tile edges
 - [ ] Add routes for
         - max/min slope in area

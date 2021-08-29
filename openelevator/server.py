@@ -17,7 +17,7 @@ from fastapi_cache.backends.redis import RedisBackend
 from fastapi_limiter import FastAPILimiter
 
 from api.routes import elevation
-from api.util import server_host, server_port, ssl_cert, ssl_key
+from os import environ
 
 # init app
 app = FastAPI(
@@ -37,7 +37,7 @@ async def startup():
     and rate limiting
     '''
     redis = await aioredis.from_url(
-        "redis://localhost", 
+        "redis://redis", 
         encoding="iso-8859-1", 
         decode_responses=True
         )
@@ -78,9 +78,9 @@ if __name__ == "__main__":
 
     uvicorn.run(
         app, 
-        host=server_host, 
-        port=server_port,
-        ssl_keyfile=ssl_key,
-        ssl_certfile=ssl_cert,
+        host=environ["host"], 
+        port=443,
+        ssl_keyfile=environ["cert-key"],
+        ssl_certfile=environ["cert"],
         log_config="log_config.yaml"
         )
