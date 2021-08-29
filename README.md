@@ -70,7 +70,7 @@ with Image.open(img) as im:
 
 ### 4. Set up your own [with this Tutorial](./docs/installation.md)
 
-### 5, ToDos
+### 5. ToDos
 - [ ] Add support for interpolation add tile edges
 - [ ] Add routes for
         - max/min slope in area
