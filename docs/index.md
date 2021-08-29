@@ -2,8 +2,8 @@
     <h1 >Open Elevator API</h1>
     <img src="assets/earth.png"></img>
     <p style="text-align:center">
-        <strong>Open Elevator API</strong> is an easy to use elevation service with up to 3m resolution.<br> Use our free <a href="/api/">public API</a>
-        or <a href="/installation/">run your own</a>.
+        <strong>Open Elevator API</strong> is an easy to use elevation service with up to 3m resolution.<br> Use our free <a href="/elevation/docs/api/">public API</a>
+        or <a href="/elevation/docs/installation/">run your own</a>.
     </p>
    <a href="/elevation/playground"> <h3> Try it out </h3> </a>
 </div>
