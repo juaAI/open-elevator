@@ -32,7 +32,7 @@ ARG rate-reset
 
 # copy ssl cert
 ADD ${cert} ${cert}
-ADD ${cert-key} ${cert-key}
+ADD ${certkey} ${certkey}
 
 # port expose
 EXPOSE 443

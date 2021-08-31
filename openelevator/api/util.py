@@ -36,12 +36,12 @@ with open(os.path.join(dir_path,"config.yml")) as yaml_file:
 
 server_host = config_content["server"]["host"]
 server_port = config_content["server"]["port"]
-rate_limit  = config_content["server"]["rate-limit"]
-rate_reset  = config_content["server"]["rate-reset"]
-viz_active  = config_content["server"]["viz-active"]
+rate_limit  = config_content["server"]["ratelimit"]
+rate_reset  = config_content["server"]["ratereset"]
+viz_active  = config_content["server"]["vizactive"]
 
 if config_content["ssl"]["ssl"] == True:
-    ssl_key  = config_content["ssl"]["cert-key"]
+    ssl_key  = config_content["ssl"]["certkey"]
     ssl_cert = config_content["ssl"]["cert"]
 else:
     ssl_key  = None

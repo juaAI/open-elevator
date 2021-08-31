@@ -7,9 +7,9 @@ services:
             dockerfile: Dockerfile
             args:
                 cert: /home/morpheus/priv/cert.pem
-                cert-key: /home/morpheus/priv/privkey.pem
-                rate-limit: 100
-                rate-reset: 60
+                certkey: /home/morpheus/priv/privkey.pem
+                ratelimit: 100
+                ratereset: 60
         ports:
             - "443:443"
         volumes:
