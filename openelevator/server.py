@@ -19,7 +19,7 @@ from fastapi_cache.backends.redis import RedisBackend
 from fastapi_limiter import FastAPILimiter
 
 from api.routes import elevation
-from api.util import server_host, server_port, ssl_cert, ssl_key
+from os import environ
 
 
 # develop version without docker
@@ -45,6 +45,7 @@ async def startup():
     Initializes redis for caching of API requests
     and rate limiting
     '''
+
     if dev:
         redis = await aioredis.from_url(
             "redis://localhost", 
