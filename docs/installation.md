@@ -11,7 +11,7 @@ You can set up the API on your own for free. To do so, you need at least
 
 ## Setup
 ```shell
-$ conda env create --file /env/environment.yml
+$ conda env create --file ./env/environment.yml
 $ conda activate open-elevator
 $ python openelevator.py
 ```
