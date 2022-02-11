@@ -1,5 +1,6 @@
 # Open Elevator
 Open Elevator is a free elevation API with up to 3m global accuracy.
+**API currently down due to moving to another provider**
 The API is publicly hosted for free at [https://opendata.predly.com/v1/elevation](https://opendata.predly.com/elevation/docs/).
 
 ![Credit:Bild Arek Socha auf Pixabay](docs/assets/earth.png)
