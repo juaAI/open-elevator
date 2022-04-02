@@ -8,4 +8,4 @@ server:
   port: 443
   ratelimit: 100
   ratereset: 60
-  vizactive: False
+  vizactive: True
