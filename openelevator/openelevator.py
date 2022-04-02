@@ -76,14 +76,15 @@ class OpenElevator():
         ]
 
         # DIRS
+        self.data_location = "/data1"
         self.current_dir = os.path.dirname(os.path.abspath(__file__))
-        self.data_dir    = os.path.join(self.current_dir, "data")
-        self.temp_dir    = os.path.join(self.current_dir, "tmp")
+        self.data_dir    = os.path.join(self.data_location, "data")
+        self.temp_dir    = os.path.join(self.data_location, "tmp")
         self.debug       = False
 
         # SYSTEM
         self.cpu_cores        = cpu_count()
-        self.download_threads = self.cpu_cores if self.cpu_cores <= 16 else 16
+        self.download_threads = int(self.cpu_cores/2)
 
         # CACHE
         self.cache_active = cache
